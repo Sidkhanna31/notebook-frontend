@@ -9,29 +9,17 @@ interface Props {
 
   onClose: () => void;
 
-  onPause: (
-    id: string,
-    paused_until: string,
-  ) => Promise<void>;
+  onPause: (id: string, paused_until: string) => Promise<void>;
 
-  onResume: (
-    id: string,
-  ) => Promise<void>;
+  onResume: (id: string) => Promise<void>;
 
-  onComplete: (
-    id: string,
-  ) => Promise<void>;
+  onComplete: (id: string) => Promise<void>;
 
-  onDelete: (
-    id: string,
-  ) => Promise<void>;
+  onDelete: (id: string) => Promise<void>;
 
   onUpdate: (note: Note) => void;
 
-  onStart: (
-    id: string,
-    expected_completion_date: string,
-  ) => Promise<void>;
+  onStart: (id: string, expected_completion_date: string) => Promise<void>;
 }
 
 const NoteModal = ({
@@ -45,8 +33,11 @@ const NoteModal = ({
   onUpdate,
   onStart,
 }: Props) => {
-  const [selectedDate, setSelectedDate] =
-    useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+
+  const [showStartDate, setShowStartDate] = useState(false);
+
+  const [showPauseDate, setShowPauseDate] = useState(false);
 
   if (!show || !note) return null;
 
@@ -54,8 +45,7 @@ const NoteModal = ({
 
   const isDelayed =
     note.expected_completion_date &&
-    new Date(note.expected_completion_date) <
-      now &&
+    new Date(note.expected_completion_date) < now &&
     !note.completed_at;
 
   const status = note.completed_at
@@ -71,9 +61,7 @@ const NoteModal = ({
   // START HANDLER
   const handleStartClick = async () => {
     if (!selectedDate) {
-      alert(
-        "Please select expected completion date",
-      );
+      alert("Please select expected completion date");
 
       return;
     }
@@ -84,9 +72,7 @@ const NoteModal = ({
   // PAUSE HANDLER
   const handlePauseClick = async () => {
     if (!selectedDate) {
-      alert(
-        "Please select pause until date",
-      );
+      alert("Please select pause until date");
 
       return;
     }
@@ -97,18 +83,13 @@ const NoteModal = ({
   return (
     <div className="note-modal-overlay">
       <div className="note-modal-box">
-
         {/* CLOSE BTN */}
-        <button
-          className="close-btn"
-          onClick={onClose}
-        >
+        <button className="close-btn" onClick={onClose}>
           ✕
         </button>
 
         {/* HEADER */}
         <div className="modal-header-section">
-
           <h1>{note.title}</h1>
 
           <div
@@ -126,61 +107,47 @@ const NoteModal = ({
           >
             {status}
           </div>
-
         </div>
 
         {/* SHORT DESC */}
         <div className="modal-section">
-
           <h4>Short Description:</h4>
 
           <p>{note.short_desc}</p>
-
         </div>
 
         {/* CONTENT */}
         <div className="modal-section">
-
           <h4>Content:</h4>
 
           <p>{note.content}</p>
-
         </div>
 
         {/* META */}
         <div className="meta-section">
-
           <p>
             <strong>Created:</strong>{" "}
-            {new Date(
-              note.createdAt,
-            ).toLocaleString()}
+            {new Date(note.createdAt).toLocaleString()}
           </p>
 
           {note.started_at ? (
             <p>
               <strong>Started:</strong>{" "}
-              {new Date(
-                note.started_at,
-              ).toLocaleString()}
+              {new Date(note.started_at).toLocaleString()}
             </p>
           ) : null}
 
           {note.completed_at ? (
             <p>
               <strong>Completed:</strong>{" "}
-              {new Date(
-                note.completed_at,
-              ).toLocaleString()}
+              {new Date(note.completed_at).toLocaleString()}
             </p>
           ) : null}
 
           {note.expected_completion_date ? (
             <p>
               <strong>Expected:</strong>{" "}
-              {new Date(
-                note.expected_completion_date,
-              ).toLocaleDateString()}
+              {new Date(note.expected_completion_date).toLocaleDateString()}
             </p>
           ) : (
             <p>
@@ -191,75 +158,87 @@ const NoteModal = ({
           {note.paused_until ? (
             <p>
               <strong>Paused Until:</strong>{" "}
-              {new Date(
-                note.paused_until,
-              ).toLocaleDateString()}
+              {new Date(note.paused_until).toLocaleDateString()}
             </p>
           ) : null}
-
         </div>
 
         {/* DATE PICKER */}
-        {!note.completed_at && (
-          <div className="date-picker-box">
-
-            <label>
-              Select Date
-            </label>
-
-            <input
-              type="date"
-              className="form-control"
-              value={selectedDate}
-              onChange={(e) =>
-                setSelectedDate(
-                  e.target.value,
-                )
-              }
-            />
-
-          </div>
-        )}
 
         {/* ACTION BUTTONS */}
         <div className="action-buttons">
-
           {!note.completed_at && (
             <>
               {/* PENDING */}
               {!note.started_at ? (
-                <button
-                  className="btn btn-primary"
-                  onClick={handleStartClick}
-                >
-                  Start
-                </button>
+                <>
+                  {!showStartDate ? (
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => setShowStartDate(true)}
+                    >
+                      Start
+                    </button>
+                  ) : (
+                    <div className="date-action-box">
+                      <input
+                        type="date"
+                        className="form-control"
+                        value={selectedDate}
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                      />
+
+                      <button
+                        className="btn btn-primary"
+                        onClick={handleStartClick}
+                      >
+                        Confirm Start
+                      </button>
+                    </div>
+                  )}
+                </>
               ) : note.is_paused ? (
                 /* PAUSED */
                 <button
                   className="btn btn-info"
-                  onClick={() =>
-                    onResume(note._id)
-                  }
+                  onClick={() => onResume(note._id)}
                 >
                   Resume
                 </button>
               ) : (
                 /* IN PROGRESS */
-                <button
-                  className="btn btn-warning"
-                  onClick={handlePauseClick}
-                >
-                  Pause
-                </button>
+                <>
+                  {!showPauseDate ? (
+                    <button
+                      className="btn btn-warning"
+                      onClick={() => setShowPauseDate(true)}
+                    >
+                      Pause
+                    </button>
+                  ) : (
+                    <div className="date-action-box">
+                      <input
+                        type="date"
+                        className="form-control"
+                        value={selectedDate}
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                      />
+
+                      <button
+                        className="btn btn-warning"
+                        onClick={handlePauseClick}
+                      >
+                        Confirm Pause
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
 
               {/* COMPLETE */}
               <button
                 className="btn btn-success"
-                onClick={() =>
-                  onComplete(note._id)
-                }
+                onClick={() => onComplete(note._id)}
               >
                 Complete
               </button>
@@ -267,25 +246,14 @@ const NoteModal = ({
           )}
 
           {/* DELETE */}
-          <button
-            className="btn btn-danger"
-            onClick={() =>
-              onDelete(note._id)
-            }
-          >
+          <button className="btn btn-danger" onClick={() => onDelete(note._id)}>
             Delete
           </button>
 
           {/* UPDATE */}
-          <button
-            className="btn btn-dark"
-            onClick={() =>
-              onUpdate(note)
-            }
-          >
+          <button className="btn btn-dark" onClick={() => onUpdate(note)}>
             Update
           </button>
-
         </div>
       </div>
     </div>

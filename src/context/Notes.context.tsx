@@ -143,7 +143,6 @@ const NotesProvider = ({ children }: { children: React.ReactNode }) => {
         content,
       });
 
-      await fetchallNotes();
     } catch (error) {
       console.error(error);
     }
@@ -154,7 +153,6 @@ const NotesProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await AxiosProvider.post(`/notes/delete/${id}`);
 
-      await fetchallNotes();
     } catch (error) {
       console.error(error);
     }
@@ -174,7 +172,6 @@ const NotesProvider = ({ children }: { children: React.ReactNode }) => {
         content,
       });
 
-      await fetchallNotes();
     } catch (error) {
       console.error(error);
     }
@@ -187,7 +184,6 @@ const NotesProvider = ({ children }: { children: React.ReactNode }) => {
         expected_completion_date,
       });
 
-      await fetchallNotes();
     } catch (error) {
       console.error(error);
     }
@@ -200,7 +196,6 @@ const NotesProvider = ({ children }: { children: React.ReactNode }) => {
         paused_until,
       });
 
-      await fetchallNotes();
     } catch (error) {
       console.error(error);
     }
@@ -211,7 +206,6 @@ const NotesProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await AxiosProvider.patch(`/notes/resume/${id}`);
 
-      await fetchallNotes();
     } catch (error) {
       console.error(error);
     }
@@ -222,7 +216,6 @@ const NotesProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await AxiosProvider.patch(`/notes/complete/${id}`);
 
-      await fetchallNotes();
     } catch (error) {
       console.error(error);
     }
