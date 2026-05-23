@@ -780,3 +780,14 @@ small {
   font-weight: 600;
   margin-bottom: 8px;
 }
+
+.date-action-box {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-right: 12px;
+}
+
+.date-action-box input {
+  width: 180px;
+}
