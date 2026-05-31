@@ -8,6 +8,13 @@ const AddNotes = () => {
     content: "",
   });
 
+  const [toast, setToast] = React.useState<{ message: string; type: "success" | "error" } | null>(null);
+
+  const showToast = (message: string, type: "success" | "error") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
   const onchangeHandler = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement
@@ -32,7 +39,7 @@ const AddNotes = () => {
         !state.short_desc ||
         !state.content
       ) {
-        alert("Please fill all the fields");
+        showToast("Please fill all the fields", "error");
         return;
       }
 
@@ -41,6 +48,7 @@ const AddNotes = () => {
         state.short_desc,
         state.content
       );
+      showToast("Note created!!", "success");
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error.message);
@@ -58,6 +66,17 @@ const AddNotes = () => {
 
   return (
     <div className="container py-5">
+
+      {/* Toast Notification */}
+      {toast && (
+        <div className={`toast-notification ${toast.type}`}>
+          <span className="toast-icon">
+            {toast.type === "success" ? "✅" : "⚠️"}
+          </span>
+          {toast.message}
+        </div>
+      )}
+
       {/* Heading */}
       <div className="mb-4">
         <h1 className="fw-bold">
