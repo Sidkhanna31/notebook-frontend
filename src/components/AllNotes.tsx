@@ -12,6 +12,7 @@ import type { Note } from "../context/Notes.context";
 const AllNotes = () => {
   const {
     notes,
+    fetchallNotes,
     startProcess,
     pauseProcess,
     resumeProcess,
@@ -48,18 +49,11 @@ const AllNotes = () => {
     expected_completion_date: string,
   ) => {
     if (!expected_completion_date) {
-      alert(
-        "Please select expected completion date",
-      );
-
+      alert("Please select expected completion date");
       return;
     }
-
-    await startProcess(
-      id,
-      expected_completion_date,
-    );
-
+    await startProcess(id, expected_completion_date);
+    await fetchallNotes();
     closeModal();
   };
 
@@ -69,42 +63,32 @@ const AllNotes = () => {
     paused_until: string,
   ) => {
     if (!paused_until) {
-      alert(
-        "Please select pause end date",
-      );
-
+      alert("Please select pause end date");
       return;
     }
-
     await pauseProcess(id, paused_until);
-
+    await fetchallNotes();
     closeModal();
   };
 
   // RESUME NOTE
-  const handleResume = async (
-    id: string,
-  ) => {
+  const handleResume = async (id: string) => {
     await resumeProcess(id);
-
+    await fetchallNotes();
     closeModal();
   };
 
   // COMPLETE NOTE
-  const handleComplete = async (
-    id: string,
-  ) => {
+  const handleComplete = async (id: string) => {
     await completeProcess(id);
-
+    await fetchallNotes();
     closeModal();
   };
 
   // DELETE NOTE
-  const handleDelete = async (
-    id: string,
-  ) => {
+  const handleDelete = async (id: string) => {
     await deleteNote(id);
-
+    await fetchallNotes();
     closeModal();
   };
 
@@ -140,7 +124,7 @@ const AllNotes = () => {
 
           return (
             <div
-              className="col-md-6 col-lg-5"
+              className="col-md-6 col-lg-6"
               key={note._id}
             >
               <div
