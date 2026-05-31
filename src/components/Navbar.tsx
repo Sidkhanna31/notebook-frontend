@@ -1,7 +1,10 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/Auth.context";
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const navItems = [
     {
@@ -19,6 +22,11 @@ const Navbar = () => {
       path: "/add-note",
     },
   ];
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <nav className="custom-navbar">
@@ -51,6 +59,19 @@ const Navbar = () => {
           ))}
 
         </div>
+
+        {/* USER INFO */}
+        {user && (
+          <div className="navbar-user">
+            <span className={`navbar-role-badge ${user.role}`}>
+              {user.role === "admin" ? "👑 Admin" : "👤 User"}
+            </span>
+            <span className="navbar-username">{user.name}</span>
+            <button className="navbar-logout-btn" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
+        )}
 
       </div>
 
