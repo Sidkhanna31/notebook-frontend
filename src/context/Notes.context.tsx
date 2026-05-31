@@ -5,6 +5,8 @@ import { AxiosProvider } from "../Constant";
 export interface Note {
   _id: string;
 
+  user_id?: string;
+
   title: string;
 
   short_desc: string;

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useNotes } from "../context/Notes.context";
+import { useAuth } from "../context/Auth.context";
 
 import NoteModal from "./NoteModal";
 
@@ -17,6 +18,9 @@ const AllNotes = () => {
     completeProcess,
     deleteNote,
   } = useNotes();
+
+  const { user } = useAuth();
+  const isAdmin = user?.role === "admin";
 
   const navigate = useNavigate();
 
@@ -174,6 +178,11 @@ const AllNotes = () => {
                 </p>
 
                 <div className="note-footer">
+                  {isAdmin && note.user_id && (
+                    <div className="note-owner-tag">
+                      👤 {note.user_id.slice(-6)}
+                    </div>
+                  )}
                   {note.expected_completion_date && (
                     <div className="note-date">
                       Expected:{" "}
